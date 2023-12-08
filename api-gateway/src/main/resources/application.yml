@@ -1,0 +1,119 @@
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://${LOCAL_HOST:localhost}:8761/eureka
+
+server:
+  port: 8080
+
+jwt:
+  secret: f7e4feb04b5931273685ec897831a2cd44da8ba567756e09b825cf93847ff001
+  expiration: 86400
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: '*'
+            allowedHeaders: '*'
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+#auth-service-uri: ${AUTH_SERVICE_URI:lb://auth-service}
+#spring:
+#  main:
+#    web-application-type: servlet
+#  datasource:
+#    url: jdbc:postgresql://${LOCAL_HOST:localhost}:5432/user_db
+#    username: postgres
+#    password: postgres
+#    driver-class-name: org.postgresql.Driver
+#  jpa:
+#    properties:
+#      hibernate:
+#        show-sql: true
+#        format_sql: true
+#    hibernate:
+#      ddl-auto: update
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          issuer-uri: http://localhost:8181/realms/spring-boot-microservices-realm
+#          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+#  application:
+#    name: api-gateway
+#  cloud:
+#    gateway:
+#      discovery:
+#        locator:
+#          enabled: true
+#          lower-case-service-id: true
+#      routes:
+#        - id: customer-service-get-all
+#          uri: http://${LOCAL_HOST:localhost}:8081
+#          predicates:
+#            - Path=/v1/customers
+#        - id: customer-service-get
+#          uri: http://${LOCAL_HOST:localhost}:8081
+#          predicates:
+#            - Path=/v1/customers/{customerId}/**
+#        - id: booking-service
+#          uri: http://${LOCAL_HOST:localhost}:8083
+#          predicates:
+#            - Path=/v1/bookings/**
+#        - id: care-provider-service
+#          uri: http://${LOCAL_HOST:localhost}:8082
+#          predicates:
+#            - Path=/v1/care-provider-service/**
+#        - id: discovery-service
+#          uri: http://${LOCAL_HOST:localhost}:8761
+#          predicates:
+#            - Path=/eureka/web
+#          filters:
+#            - SetPath=/
+#        - id: discovery-service-static
+#          uri: http://${LOCAL_HOST:localhost}:8761
+#          predicates:
+#            - Path=/eureka/**
+#        - id: user-service-get-all
+#          uri: http://${LOCAL_HOST:localhost}:8084
+#          predicates:
+#            - Path=/v1/users
+#        - id: user-service-get
+#          uri: http://${LOCAL_HOST:localhost}:8084
+#          predicates:
+#            - Path=/v1/users/{userId}/**
+#        - id: user-service-save
+#          uri: http://${LOCAL_HOST:localhost}:8084
+#          predicates:
+#            - Path=/v1/users
+#            - Method=POST
+#
+#
+#logging:
+#  level:
+#    root: INFO
+#    org.springframework.cloud.gateway.route.RouteDefinitionLocator: INFO
+#    org.springframework.cloud.gateway: TRACE

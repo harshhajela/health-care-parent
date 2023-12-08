@@ -1,0 +1,94 @@
+version: '3'
+services:
+  discovery-server:
+    image: discovery-server-img
+    ports:
+      - "8761:8761"
+    container_name: discovery-server
+    networks:
+      - health_care_network
+#  keycloak-server:
+#    image: quay.io/keycloak/keycloak:22.0.1
+#    ports:
+#      - "8181:8080"
+#    environment:
+#      - KEYCLOAK_ADMIN=admin
+#      - KEYCLOAK_ADMIN_PASSWORD=admin
+#    container_name: keycloak-server
+#    networks:
+#      - health_care_network
+#    command: ["start-dev"]
+#    volumes:
+#      - ./keycloak-data:./keycloak
+  api-gateway:
+    image: api-gateway-img
+    ports:
+      - "8080:8080"
+    environment:
+      - LOCAL_HOST=host.docker.internal
+    container_name: api-gateway
+    depends_on:
+      - discovery-server
+    networks:
+      - health_care_network
+  auth-service:
+    image: auth-service-img
+    ports:
+      - "9000:9000"
+    environment:
+      - LOCAL_HOST=host.docker.internal
+    container_name: auth-service
+    depends_on:
+      - api-gateway
+    networks:
+      - health_care_network
+
+  customer-service:
+    image: customer-service-img
+    ports:
+      - "8081:8081"
+    environment:
+      - LOCAL_HOST=host.docker.internal
+    container_name: customer-service
+    depends_on:
+      - api-gateway
+    networks:
+      - health_care_network
+
+  booking-service:
+    image: booking-service-img
+    ports:
+      - "8083:8083"
+    environment:
+      - LOCAL_HOST=host.docker.internal
+    container_name: booking-service
+    depends_on:
+      - api-gateway
+    networks:
+      - health_care_network
+
+  care-provider:
+    image: care-provider-img
+    ports:
+      - "8082:8082"
+    environment:
+      - LOCAL_HOST=host.docker.internal
+    container_name: care-provider
+    depends_on:
+      - api-gateway
+    networks:
+      - health_care_network
+
+  user-service:
+    image: user-service-img
+    ports:
+      - "8084:8084"
+    environment:
+      - LOCAL_HOST=host.docker.internal
+    container_name: user-service
+    depends_on:
+      - api-gateway
+    networks:
+      - health_care_network
+networks:
+  health_care_network:

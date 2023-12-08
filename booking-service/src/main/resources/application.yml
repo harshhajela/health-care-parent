@@ -1,0 +1,29 @@
+server:
+  port: 8083
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://${LOCAL_HOST:localhost}:8761/eureka
+
+spring:
+  application:
+    name: booking-service
+  datasource:
+    url: jdbc:postgresql://${LOCAL_HOST:localhost}:5432/booking_service
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        show-sql: true
+        format_sql: true
+liquibase:
+  change-log: classpath:liquibase-changeLog.xml
+
+logging:
+  level:
+    org.hibernate.SQL: INFO
