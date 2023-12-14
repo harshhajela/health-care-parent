@@ -49,6 +49,8 @@ jwt:
 #  expiration: 300000
 
 
-user:
-  activation-link: http://localhost:4200/activate-account?token=%s
-  forgot-password-link: http://localhost:4200/reset-password?token=%s
+email:
+  enabled: true
+  user:
+    activation-link: http://localhost:4200/activate-account?token=%s
+    forgot-password-link: http://localhost:4200/reset-password?token=%s

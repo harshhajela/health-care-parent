@@ -19,10 +19,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
-    @Value("${user.activation-link}")
+    @Value("${email.enabled}")
+    private boolean enabled;
+
+    @Value("${email.user.activation-link}")
     private String activationLink;
 
-    @Value("${user.forgot-password-link}")
+    @Value("${email.user.forgot-password-link}")
     private String forgotPasswordLink;
 
     private final JavaMailSender mailSender;
@@ -30,20 +33,22 @@ public class EmailServiceImpl implements EmailService {
 
     @Async
     public void sendActivationEmail(UserEntity user) {
-        var optionalUserActivation = activationService.getUserActivationEntity(user);
-        if (optionalUserActivation.isPresent()) {
-            var userActivation = optionalUserActivation.get();
-            try {
-                MimeMessage mimeMessage = mailSender.createMimeMessage();
-                MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-                helper.setTo(user.getEmail());
-                helper.setText(generateActivationText(userActivation.getToken()));
-                helper.setSubject("Confirm your email");
-                helper.setFrom("hello@helpinghands.com");
-                mailSender.send(mimeMessage);
-                log.info("Activation email sent!");
-            } catch (MessagingException e) {
-                log.error("Error while sending activation email", e);
+        if (this.enabled) {
+            var optionalUserActivation = activationService.getUserActivationEntity(user);
+            if (optionalUserActivation.isPresent()) {
+                var userActivation = optionalUserActivation.get();
+                try {
+                    MimeMessage mimeMessage = mailSender.createMimeMessage();
+                    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+                    helper.setTo(user.getEmail());
+                    helper.setText(generateActivationText(userActivation.getToken()));
+                    helper.setSubject("Confirm your email");
+                    helper.setFrom("hello@helpinghands.com");
+                    mailSender.send(mimeMessage);
+                    log.info("Activation email sent!");
+                } catch (MessagingException e) {
+                    log.error("Error while sending activation email", e);
+                }
             }
         }
     }
@@ -51,17 +56,19 @@ public class EmailServiceImpl implements EmailService {
     @Override
     @Async
     public void sendForgotPassword(ForgotPasswordEntity forgotPasswordEntity) {
-        try {
-            MimeMessage mimeMessage = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-            helper.setTo(forgotPasswordEntity.getUser().getEmail());
-            helper.setText(generateForgotPasswordText(forgotPasswordEntity.getToken()));
-            helper.setSubject("Reset your password");
-            helper.setFrom("hello@helpinghands.com");
-            mailSender.send(mimeMessage);
-            log.info("Reset password email sent!");
-        } catch (MessagingException e) {
-            log.error("Error while sending reset password email", e);
+        if (this.enabled) {
+            try {
+                MimeMessage mimeMessage = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+                helper.setTo(forgotPasswordEntity.getUser().getEmail());
+                helper.setText(generateForgotPasswordText(forgotPasswordEntity.getToken()));
+                helper.setSubject("Reset your password");
+                helper.setFrom("hello@helpinghands.com");
+                mailSender.send(mimeMessage);
+                log.info("Reset password email sent!");
+            } catch (MessagingException e) {
+                log.error("Error while sending reset password email", e);
+            }
         }
     }
 
