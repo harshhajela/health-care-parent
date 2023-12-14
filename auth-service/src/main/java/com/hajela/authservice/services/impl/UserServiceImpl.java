@@ -14,7 +14,6 @@ import com.hajela.authservice.repo.RoleRepository;
 import com.hajela.authservice.repo.UserRepository;
 import com.hajela.authservice.services.UserActivationService;
 import com.hajela.authservice.services.UserService;
-import com.hajela.authservice.services.impl.EmailServiceImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +63,9 @@ public class UserServiceImpl implements UserService {
     }
 
     public Page<UserDto> findAllUsers(Pageable pageable, String role) {
-        RoleEntity roleEntity = roleRepository.findByName(Role.fromRole(role)).get();
+        RoleEntity roleEntity = roleRepository.findByName(Role.fromRole(role))
+                .orElseThrow(() -> new InvalidRoleException(role));
+
         Page<UserEntity> userPage = userRepository.findAllByRoleOrderByUserIdDesc(pageable, roleEntity);
         List<UserDto> userDtoList = userPage.getContent().stream()
                 .map(UserDto::from)
@@ -86,21 +87,18 @@ public class UserServiceImpl implements UserService {
 
     public UserEntity login(AuthRequest authRequest) {
 
-        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(authRequest.getEmail());
-        if (userEntityOptional.isEmpty()) {
-            throw new InvalidEmailException(authRequest.getEmail());
-        }
-        var user = userEntityOptional.get();
+        UserEntity user = userRepository.findByEmail(authRequest.getEmail())
+                .orElseThrow(() -> new InvalidEmailException(authRequest.getEmail()));
 
-        if (!user.getStatus().equals(UserStatus.ACTIVATED.name())) {
+        if (!UserStatus.ACTIVATED.name().equals(user.getStatus())) {
             throw new UserStatusBlockedException(user.getStatus());
         }
 
-        var passwordMatches = passwordEncoder.matches(authRequest.getPassword(), userEntityOptional.get().getPassword());
+        boolean passwordMatches = passwordEncoder.matches(authRequest.getPassword(), user.getPassword());
         log.info("Password matches {}", passwordMatches);
 
         if (passwordMatches) {
-            return userEntityOptional.get();
+            return user;
         }
 
         throw new IncorrectPasswordException(authRequest.getEmail());

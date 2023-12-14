@@ -3,11 +3,24 @@ package com.hajela.authservice.exceptions;
 import com.hajela.authservice.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.List;
+
 @RestControllerAdvice
 public class GlobalExceptionHandling {
+
+    private static String apply(ObjectError error) {
+        if (error instanceof FieldError fieldError) {
+            return fieldError.getField() + ": " + error.getDefaultMessage();
+        } else {
+            return error.getDefaultMessage();
+        }
+    }
 
     @ExceptionHandler(value = ResetForgotPasswordException.class)
     protected ResponseEntity<ErrorResponse> handleResetForgotPasswordException(ResetForgotPasswordException ex) {
@@ -16,6 +29,7 @@ public class GlobalExceptionHandling {
                 .message(ex.getMessage())
                 .build(), HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(value = ForgotPasswordException.class)
     protected ResponseEntity<ErrorResponse> handleForgotPasswordException(ForgotPasswordException ex) {
         return new ResponseEntity<>(ErrorResponse.builder()
@@ -63,7 +77,7 @@ public class GlobalExceptionHandling {
     }
 
     @ExceptionHandler(value = InvalidAuthCredentialsException.class)
-    protected ResponseEntity<ErrorResponse> handleInvalidAuthCredentialsException(InvalidAuthCredentialsException exception) {
+    protected ResponseEntity<ErrorResponse> handleInvalidAuthCredentialsException() {
         return new ResponseEntity<>(ErrorResponse.builder()
                 .code("invalid.credentials")
                 .message("Please check email/password provided")
@@ -123,6 +137,20 @@ public class GlobalExceptionHandling {
         return new ResponseEntity<>(ErrorResponse.builder()
                 .code("invalid.role")
                 .message(String.format("Role %s is not supported", exception.getMessage()))
+                .build(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        List<String> errors = ex.getBindingResult()
+                .getAllErrors()
+                .stream()
+                .map(GlobalExceptionHandling::apply)
+                .toList();
+        return new ResponseEntity<>(ErrorResponse.builder()
+                .code("invalid.request")
+                .message("Please check errors for more details!")
+                .errors(errors)
                 .build(), HttpStatus.BAD_REQUEST);
     }
 }

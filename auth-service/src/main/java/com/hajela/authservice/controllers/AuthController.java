@@ -6,6 +6,7 @@ import com.hajela.authservice.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,7 +18,7 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping(value = "/register")
-    public ResponseEntity<Void> register(@RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<Void> register(@Validated @RequestBody RegistrationRequest registrationRequest) {
         userService.createNewUser(registrationRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
