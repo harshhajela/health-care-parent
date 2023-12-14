@@ -9,6 +9,43 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandling {
 
+    @ExceptionHandler(value = ResetForgotPasswordException.class)
+    protected ResponseEntity<ErrorResponse> handleResetForgotPasswordException(ResetForgotPasswordException ex) {
+        return new ResponseEntity<>(ErrorResponse.builder()
+                .code("reset.password.exception")
+                .message(ex.getMessage())
+                .build(), HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(value = ForgotPasswordException.class)
+    protected ResponseEntity<ErrorResponse> handleForgotPasswordException(ForgotPasswordException ex) {
+        return new ResponseEntity<>(ErrorResponse.builder()
+                .code("forgot.password.email.not.found")
+                .message(ex.getMessage())
+                .build(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = ActivateAccountException.class)
+    protected ResponseEntity<ErrorResponse> handleActivateAccountException(ActivateAccountException ex) {
+        ErrorResponse errorResponse;
+        if (ex.getMessage().contains("expired")) {
+            errorResponse = ErrorResponse.builder()
+                    .code("activation.link.expired")
+                    .message(ex.getMessage())
+                    .build();
+        } else if (ex.getMessage().contains("already used")) {
+            errorResponse = ErrorResponse.builder()
+                    .code("activation.link.already.used")
+                    .message(ex.getMessage())
+                    .build();
+        } else {
+            errorResponse = ErrorResponse.builder()
+                    .code("activation.link.error")
+                    .message(ex.getMessage())
+                    .build();
+        }
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(value = RefreshTokenExpired.class)
     protected ResponseEntity<ErrorResponse> handleRefreshTokenExpired(RefreshTokenExpired ex) {
         return new ResponseEntity<>(ErrorResponse.builder()
@@ -54,6 +91,14 @@ public class GlobalExceptionHandling {
         return new ResponseEntity<>(ErrorResponse.builder()
                 .code("incorrect.password")
                 .message("Incorrect Password provided for email=" + exception.getMessage())
+                .build(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = UserStatusBlockedException.class)
+    protected ResponseEntity<ErrorResponse> handleUserStatusBlockedException(UserStatusBlockedException ex) {
+        return new ResponseEntity<>(ErrorResponse.builder()
+                .code("user.status")
+                .message(String.format("User status is %s. Please contact customer support", ex.getMessage()))
                 .build(), HttpStatus.BAD_REQUEST);
     }
 

@@ -14,7 +14,10 @@ public class RouterValidator {
     public static final List<String> openEndpoints = List.of(
             "/v1/auth/register",
             "/v1/auth/login",
-            "/v1/auth/refreshToken"
+            "/v1/auth/refreshToken",
+            "/v1/auth/activate",
+            "/v1/auth/forgotPassword",
+            "/v1/auth/resetPassword"
     );
 
     public static final Predicate<ServerHttpRequest> isSecured =

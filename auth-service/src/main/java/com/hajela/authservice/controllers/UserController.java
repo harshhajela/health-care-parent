@@ -2,14 +2,16 @@ package com.hajela.authservice.controllers;
 
 
 import com.hajela.authservice.dto.UserDto;
-import com.hajela.authservice.services.RefreshTokenService;
 import com.hajela.authservice.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    private final RefreshTokenService refreshTokenService;
 
     @GetMapping(value = "/{role}")
     public ResponseEntity<Page<UserDto>> getAllUsers(@PageableDefault(page = 0, size = 5) Pageable pageable,

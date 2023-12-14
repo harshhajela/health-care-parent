@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ApiGatewayConfig {
 
+    public static final String LB_AUTH_SERVICE = "lb://auth-service";
+    public static final String LB_PROVIDER_SERVICE = "lb://provider-service";
+
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder, AuthenticationFilter filter) {
         return builder.routes()
@@ -17,41 +20,56 @@ public class ApiGatewayConfig {
                 .route("auth-service-register", r ->
                         r.path("/v1/auth/register")
                                 .filters(f -> f.filter(filter))
-                                .uri("lb://auth-service"))
+                                .uri(LB_AUTH_SERVICE))
 
                 .route("auth-service-login", r ->
                         r.path("/v1/auth/login")
                                 .filters(f -> f.filter(filter))
-                                .uri("lb://auth-service"))
+                                .uri(LB_AUTH_SERVICE))
 
                 .route("auth-service-refreshToken", r ->
                         r.path("/v1/auth/refreshToken")
                                 .filters(f -> f.filter(filter))
-                                .uri("lb://auth-service"))
+                                .uri(LB_AUTH_SERVICE))
+
+                .route("auth-service-activate", r ->
+                        r.path("/v1/auth/activate")
+                                .filters(f -> f.filter(filter))
+                                .uri(LB_AUTH_SERVICE))
+
+                .route("auth-service-forgot-password", r ->
+                        r.path("/v1/auth/forgotPassword")
+                                .filters(f -> f.filter(filter))
+                                .uri(LB_AUTH_SERVICE))
+
+                .route("auth-service-reset-password", r ->
+                        r.path("/v1/auth/resetPassword")
+                                .filters(f -> f.filter(filter))
+                                .uri(LB_AUTH_SERVICE))
 
                 .route("user-service-get-all", r ->
                         r.path("/v1/users")
                                 .filters(f -> f.filter(filter))
-                                .uri("lb://auth-service"))
+                                .uri(LB_AUTH_SERVICE))
 
                 .route("user-service-get", r ->
                         r.path("/v1/users/**")
                                 .filters(f -> f.filter(filter))
-                                .uri("lb://auth-service"))
+                                .uri(LB_AUTH_SERVICE))
 
                 .route("provider-profile-get", r ->
                         r.path("/v1/provider/profile/**")
                                 .filters(f -> f.filter(filter))
-                                .uri("lb://provider-service"))
+                                .uri(LB_PROVIDER_SERVICE))
                 .route("provider-profile-post", r ->
                         r.path("/v1/provider/profile")
                                 .filters(f -> f.filter(filter))
-                                .uri("lb://provider-service"))
+                                .uri(LB_PROVIDER_SERVICE))
 
                 .route("provider-documents", r ->
                         r.path("/v1/provider/documents")
                                 .filters(f -> f.filter(filter))
-                                .uri("lb://provider-service"))
+                                .uri(LB_PROVIDER_SERVICE))
 
                 .build();
     }

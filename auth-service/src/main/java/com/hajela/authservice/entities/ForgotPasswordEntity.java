@@ -6,21 +6,28 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "refresh_token")
-public class RefreshTokenEntity {
-
+@Entity(name = "forgot_password")
+public class ForgotPasswordEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false)
     private String token;
-    private Instant expiryDate;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime expiresAt;
+
+    private LocalDateTime confirmedAt;
 
     @OneToOne
     @JoinColumn(name= "user_id", referencedColumnName = "user_id")

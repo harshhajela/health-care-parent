@@ -13,8 +13,10 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Entity(name = "user_tbl")
 public class UserEntity {
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer userId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "user_id")
+    private Long userId;
 
     @Column(name = "email", unique = true, nullable = false)
     private String email;

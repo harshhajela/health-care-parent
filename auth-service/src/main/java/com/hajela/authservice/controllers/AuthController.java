@@ -1,18 +1,12 @@
 package com.hajela.authservice.controllers;
 
-import com.hajela.authservice.dto.AuthRequest;
-import com.hajela.authservice.dto.AuthResponse;
-import com.hajela.authservice.dto.RefreshTokenRequest;
-import com.hajela.authservice.dto.RegistrationRequest;
+import com.hajela.authservice.dto.*;
 import com.hajela.authservice.services.AuthService;
 import com.hajela.authservice.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/auth")
@@ -39,4 +33,20 @@ public class AuthController {
         return new ResponseEntity<>(authResponse, HttpStatus.ACCEPTED);
     }
 
+    @PutMapping(value = "/activate")
+    public ResponseEntity<AuthResponse> activateAccount(@RequestBody ActivateAccountDto activateAccountDto) {
+        return new ResponseEntity<>(authService.activateAccount(activateAccountDto), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/forgotPassword")
+    public ResponseEntity<Void> forgotPassword(@RequestBody ForgotPasswordDto forgotPasswordDto) {
+        authService.forgotPassword(forgotPasswordDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "/resetPassword")
+    public ResponseEntity<Void> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
+        authService.resetUserPassword(resetPasswordDto);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -1,6 +1,5 @@
 package com.hajela.authservice.services;
 
-import com.hajela.authservice.dto.UserDto;
 import com.hajela.authservice.entities.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
