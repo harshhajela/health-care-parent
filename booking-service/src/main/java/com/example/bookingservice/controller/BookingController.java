@@ -2,7 +2,7 @@ package com.example.bookingservice.controller;
 
 import com.example.bookingservice.dto.BookingDto;
 import com.example.bookingservice.dto.CreateBookingDto;
-import com.example.bookingservice.model.BookingEntity;
+import com.example.bookingservice.entities.BookingEntity;
 import com.example.bookingservice.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,20 +20,22 @@ public class BookingController {
     private final BookingService bookingService;
 
     @GetMapping(value = "/{bookingId}")
-    public ResponseEntity<BookingDto> getBooking(@PathVariable(value = "bookingId") Integer bookingId) {
+    public ResponseEntity<BookingDto> getBooking(@PathVariable(value = "bookingId") String bookingId) {
         var booking = bookingService.getBooking(bookingId);
         return booking.map(entity -> ResponseEntity.ok(BookingEntity.from(entity)))
                 .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
-    @GetMapping(value = "/history/{customerId}")
-    public ResponseEntity<List<BookingDto>> getCustomerBookingHistory(@PathVariable(value = "customerId") Integer customerId) {
-        return ResponseEntity.ok(bookingService.getCustomerBookingHistory(customerId));
+    @GetMapping(value = "/history")
+    public ResponseEntity<List<BookingDto>> getBookingHistory(
+            @RequestHeader(name = "Authorization") String authorizationHeader) {
+        return ResponseEntity.ok(bookingService.getBookingHistory(authorizationHeader));
     }
 
     @PostMapping
-    public ResponseEntity<BookingDto> saveBookingForCustomer(@RequestBody CreateBookingDto bookingDto) {
-        var newBooking = bookingService.createNewBooking(bookingDto);
+    public ResponseEntity<BookingDto> createNewBooking(@RequestHeader(name = "Authorization") String authorizationHeader,
+                                                       @RequestBody CreateBookingDto bookingDto) {
+        var newBooking = bookingService.createNewBooking(authorizationHeader, bookingDto);
         if (newBooking.isEmpty()) {
             return ResponseEntity.badRequest().build();
         } else {

@@ -10,20 +10,20 @@ eureka:
 
 spring:
   application:
-    name: booking-service
-  datasource:
-    url: jdbc:postgresql://${LOCAL_HOST:localhost}:5432/booking_service
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    properties:
-      hibernate:
-        show-sql: true
-        format_sql: true
-liquibase:
-  change-log: classpath:liquibase-changeLog.xml
+    name: BOOKING-SERVICE
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: bookings
+
+auth-service:
+  url: http://AUTH-SERVICE
 
 logging:
   level:
     org.hibernate.SQL: INFO
+
+jwt:
+  secret: f7e4feb04b5931273685ec897831a2cd44da8ba567756e09b825cf93847ff001
+  expiration: 300000

@@ -45,8 +45,8 @@ eureka:
 
 jwt:
   secret: f7e4feb04b5931273685ec897831a2cd44da8ba567756e09b825cf93847ff001
-  expiration: 60000
-#  expiration: 300000
+  expiration: 900000
+#  expiration: 60000
 
 
 email:

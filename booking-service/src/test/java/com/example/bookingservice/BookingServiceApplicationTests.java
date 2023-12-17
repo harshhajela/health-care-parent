@@ -2,26 +2,40 @@ package com.example.bookingservice;
 
 import com.example.bookingservice.dto.BookingDto;
 import com.example.bookingservice.dto.CreateBookingDto;
+import com.example.bookingservice.dto.UserDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.restassured.RestAssured;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static io.restassured.RestAssured.given;
 import static io.restassured.config.JsonConfig.jsonConfig;
 import static io.restassured.path.json.config.JsonPathConfig.NumberReturnType.BIG_DECIMAL;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 
-@Rollback
-@Transactional
 class BookingServiceApplicationTests extends BaseIntegrationTest {
+
+    public static final String CUSTOMER_EMAIL = "customer@test.com";
+    public static final String CUSTOMER_ROLE = "CUSTOMER";
+    public static final String PROVIDER_EMAIL = "provider@test.com";
+    public static final String PROVIDER_ROLE = "PROVIDER";
+
 
     @LocalServerPort
     private int serverPort;
+
+    @Autowired
+    private JwtTestUtils jwtUtils;
 
     private final RestAssuredConfig config = new RestAssuredConfig().jsonConfig(jsonConfig().numberReturnType(BIG_DECIMAL));
 
@@ -39,10 +53,15 @@ class BookingServiceApplicationTests extends BaseIntegrationTest {
     @Test
     void testPostWorksOk() {
         var createBookingDto = getBookingDto();
+        String jwtToken = jwtUtils.generateToken(CUSTOMER_EMAIL, "CUSTOMER");
+
+        doStubbings();
+
         // @formatter:off
         given().log().all()
                 .config(config)
                 .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + jwtToken)
                 .body(createBookingDto)
                 .when()
                 .post()
@@ -53,14 +72,53 @@ class BookingServiceApplicationTests extends BaseIntegrationTest {
         // @formatter:on
     }
 
+    private void doStubbings() {
+        stubFor(get(urlEqualTo("/v1/users/" + CUSTOMER_EMAIL))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(toJson(getUserDto(CUSTOMER_EMAIL, CUSTOMER_ROLE)))
+                ));
+
+        stubFor(get(urlEqualTo("/v1/users/" + PROVIDER_EMAIL))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(toJson(getUserDto(PROVIDER_EMAIL, PROVIDER_ROLE)))
+                ));
+    }
+
+    private UserDto getUserDto(String email, String role) {
+        return UserDto.builder()
+                .id(100L)
+                .email(email)
+                .role(role)
+                .created(LocalDateTime.now())
+                .status("ACTIVATED")
+                .build();
+    }
+
+    private String toJson(Object object) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            return objectMapper.writeValueAsString(object);
+        } catch (Exception e) {
+            throw new RuntimeException("Error converting object to JSON", e);
+        }
+    }
+
     @Test
     void testBookingHistoryWorks() {
         var createBookingDto = getBookingDto();
+        var token = jwtUtils.generateToken(CUSTOMER_EMAIL, "CUSTOMER");
+        doStubbings();
 
         // @formatter:off
         BookingDto response = given().log().all()
                 .config(config)
                 .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + token)
                 .body(createBookingDto)
                 .when()
                 .post()
@@ -76,19 +134,42 @@ class BookingServiceApplicationTests extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .pathParam("bookingId", response.getBookingId())
                 .when()
-                .get("/history/{bookingId}")
+                .get("/{bookingId}")
+                .then().log().all()
+                .assertThat()
+                .statusCode(200);
+        // @formatter:on
+
+        // @formatter:off
+        given().log().all()
+                .config(config)
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + token)
+                .when()
+                .get("/history")
                 .then().log().all()
                 .assertThat()
                 .statusCode(200)
-                .body("bookingId", notNullValue());
+                .body("[0].bookingId", notNullValue())
+                .body("[0].customerEmail", equalTo(CUSTOMER_EMAIL))
+                .body("[0].providerEmail", equalTo(PROVIDER_EMAIL))
+                .body("[0].createdAt", notNullValue())
+                .body("[0].bookingDate", notNullValue())
+                .body("[0].bookingStatus", equalTo("BOOKING_CREATED"))
+                .body("[0].servicesBooked", hasItems("Service1", "Service2"));
         // @formatter:on
     }
 
     private CreateBookingDto getBookingDto() {
         return CreateBookingDto.builder()
-                .careProviderId(1)
-                .customerId(1)
+                .providerEmail("provider@test.com")
+                .bookingDate(LocalDateTime.now())
+                .servicesBooked(getServicesOffered())
                 .build();
+    }
+
+    private List<String> getServicesOffered() {
+        return List.of("Service1", "Service2");
     }
 
 }
