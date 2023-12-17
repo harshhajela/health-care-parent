@@ -28,12 +28,12 @@ public class LoggingFilter extends OncePerRequestFilter {
 
         String requestBody = getStringValue(requestWrapper.getContentAsByteArray(),
                 request.getCharacterEncoding());
-        String responseBody = getStringValue(responseWrapper.getContentAsByteArray(),
-                response.getCharacterEncoding());
+        /*String responseBody = getStringValue(responseWrapper.getContentAsByteArray(),
+                response.getCharacterEncoding());*/
 
         log.info(
-                "FINISHED PROCESSING : METHOD={}; REQUESTURI={}; RESPONSE CODE={}; TIME TAKEN={} REQUEST PAYLOAD={}; RESPONSE={};",
-                request.getMethod(), request.getRequestURI(), response.getStatus(), timeTaken, requestBody, responseBody);
+                "FINISHED PROCESSING : METHOD={}; REQUESTURI={}; RESPONSE CODE={}; TIME TAKEN={} REQUEST PAYLOAD={};",
+                request.getMethod(), request.getRequestURI(), response.getStatus(), timeTaken, requestBody);
         responseWrapper.copyBodyToResponse();
     }
 

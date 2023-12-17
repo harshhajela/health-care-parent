@@ -12,6 +12,7 @@ public class ApiGatewayConfig {
 
     public static final String LB_AUTH_SERVICE = "lb://auth-service";
     public static final String LB_PROVIDER_SERVICE = "lb://provider-service";
+    public static final String LB_BOOKING_SERVICE = "lb://BOOKING-SERVICE";
 
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder, AuthenticationFilter filter) {
@@ -70,6 +71,16 @@ public class ApiGatewayConfig {
                         r.path("/v1/provider/documents")
                                 .filters(f -> f.filter(filter))
                                 .uri(LB_PROVIDER_SERVICE))
+
+                /*BOOKING SERVICE ROUTES*/
+                .route("create-booking", r ->
+                        r.path("/v1/bookings")
+                                .filters(f -> f.filter(filter))
+                                .uri(LB_BOOKING_SERVICE))
+                .route("booking-get-calls", r ->
+                        r.path("/v1/bookings/**")
+                                .filters(f -> f.filter(filter))
+                                .uri(LB_BOOKING_SERVICE))
 
                 .build();
     }

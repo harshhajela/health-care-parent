@@ -1,14 +1,14 @@
 package com.example.bookingservice.repository;
 
 
-import com.example.bookingservice.model.BookingEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import com.example.bookingservice.entities.BookingEntity;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-@Repository
-public interface BookingRepository extends JpaRepository<BookingEntity, Integer> {
+public interface BookingRepository extends MongoRepository<BookingEntity, String> {
 
-    List<BookingEntity> findAllByCustomerIdOrderByCreatedDesc(Integer customerId);
+    List<BookingEntity> findAllByCustomer_EmailOrderByCreatedAtDesc(String customerEmail);
+    List<BookingEntity> findAllByProvider_EmailOrderByCreatedAtDesc(String providerEmail);
+
 }
