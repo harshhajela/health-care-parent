@@ -2,6 +2,7 @@ package com.example.bookingservice.controller;
 
 import com.example.bookingservice.dto.BookingDto;
 import com.example.bookingservice.dto.CreateBookingDto;
+import com.example.bookingservice.dto.UpdateBookingDto;
 import com.example.bookingservice.entities.BookingEntity;
 import com.example.bookingservice.service.BookingService;
 import lombok.RequiredArgsConstructor;
@@ -45,5 +46,13 @@ public class BookingController {
             return ResponseEntity.created(uri)
                     .body(BookingEntity.from(newBooking.get()));
         }
+    }
+
+    @PatchMapping("update")
+    public ResponseEntity<BookingDto> updateBookingStatus(@RequestBody UpdateBookingDto updateBookingDto) {
+        return  ResponseEntity.ok(
+                bookingService.updateBookingStatus(
+                        updateBookingDto.getBookingId(),
+                        updateBookingDto.getBookingStatus()));
     }
 }

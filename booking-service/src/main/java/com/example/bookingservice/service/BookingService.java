@@ -68,4 +68,16 @@ public class BookingService {
     public Optional<BookingEntity> getBooking(String bookingId) {
         return bookingRepository.findById(bookingId);
     }
+
+    public BookingDto updateBookingStatus(String bookingId, BookingStatus action) {
+        Optional<BookingEntity> entityOptional = bookingRepository.findById(bookingId);
+        if (entityOptional.isEmpty()) {
+            throw new BookingException("data.not.found", "Booking not found");
+        }
+        BookingEntity bookingEntity = entityOptional.get();
+        bookingEntity.setBookingStatus(action);
+        bookingEntity.setUpdatedAt(LocalDateTime.now());
+        bookingRepository.save(bookingEntity);
+        return BookingEntity.from(bookingEntity);
+    }
 }

@@ -6,6 +6,7 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
 @Slf4j
 @Configuration
 public class ApiGatewayConfig {
@@ -77,7 +78,7 @@ public class ApiGatewayConfig {
                         r.path("/v1/bookings")
                                 .filters(f -> f.filter(filter))
                                 .uri(LB_BOOKING_SERVICE))
-                .route("booking-get-calls", r ->
+                .route("booking-api-calls", r ->
                         r.path("/v1/bookings/**")
                                 .filters(f -> f.filter(filter))
                                 .uri(LB_BOOKING_SERVICE))

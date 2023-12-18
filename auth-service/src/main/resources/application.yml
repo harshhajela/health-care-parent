@@ -37,7 +37,7 @@ spring:
 
 eureka:
   instance:
-    hostname: localhost
+    hostname: ${LOCAL_HOST:localhost}
   client:
     service-url:
       defaultZone: http://${LOCAL_HOST:localhost}:8761/eureka
@@ -58,4 +58,3 @@ email:
 registration:
   validation:
     password-pattern: ^(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).{8,}$
-#    password-pattern: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$

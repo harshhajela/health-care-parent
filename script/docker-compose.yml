@@ -7,19 +7,7 @@ services:
     container_name: discovery-server
     networks:
       - health_care_network
-#  keycloak-server:
-#    image: quay.io/keycloak/keycloak:22.0.1
-#    ports:
-#      - "8181:8080"
-#    environment:
-#      - KEYCLOAK_ADMIN=admin
-#      - KEYCLOAK_ADMIN_PASSWORD=admin
-#    container_name: keycloak-server
-#    networks:
-#      - health_care_network
-#    command: ["start-dev"]
-#    volumes:
-#      - ./keycloak-data:./keycloak
+
   api-gateway:
     image: api-gateway-img
     ports:
@@ -31,6 +19,7 @@ services:
       - discovery-server
     networks:
       - health_care_network
+
   auth-service:
     image: auth-service-img
     ports:
@@ -38,18 +27,6 @@ services:
     environment:
       - LOCAL_HOST=host.docker.internal
     container_name: auth-service
-    depends_on:
-      - api-gateway
-    networks:
-      - health_care_network
-
-  customer-service:
-    image: customer-service-img
-    ports:
-      - "8081:8081"
-    environment:
-      - LOCAL_HOST=host.docker.internal
-    container_name: customer-service
     depends_on:
       - api-gateway
     networks:
@@ -79,16 +56,6 @@ services:
     networks:
       - health_care_network
 
-  user-service:
-    image: user-service-img
-    ports:
-      - "8084:8084"
-    environment:
-      - LOCAL_HOST=host.docker.internal
-    container_name: user-service
-    depends_on:
-      - api-gateway
-    networks:
-      - health_care_network
 networks:
   health_care_network:
+    external: false

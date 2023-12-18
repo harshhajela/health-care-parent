@@ -33,28 +33,4 @@ public class UserController {
                 .orElseThrow(() -> new InvalidEmailException(email)));
     }
 
-    /*
-
-    @PostMapping
-    public ResponseEntity<UserDto> saveNewUser(@RequestBody UserRegistrationDto userDto) {
-        UserEntity newUser = userService.createNewUser(userDto);
-        return ResponseEntity.ok(UserDto.from(newUser));
-    }
-
-
-
-    @GetMapping(value = "/{userId}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable(value = "userId") Integer userId) {
-        return ResponseEntity.ok(userService.findUserById(userId));
-    }
-
-    @PostMapping(value = "/login")
-    public ResponseEntity<UserDto> login(@RequestBody LoginDto loginDto) {
-        return userService.login(loginDto);
-    }
-
-    @PostMapping(value = "/createRefreshToken")
-    public ResponseEntity<String> refreshToken(@RequestBody LoginDto loginDto) {
-        return ResponseEntity.ok(refreshTokenService.createRefreshToken(loginDto.getEmail()));
-    }*/
 }

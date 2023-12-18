@@ -10,14 +10,14 @@ echo "api-gateway image building"
 echo "auth-service image building"
 ./script/buildImages/auth-service-build.sh
 
-echo "customer-service image building"
-./script/buildImages/customer-service-build.sh
+#echo "customer-service image building"
+#./script/buildImages/customer-service-build.sh
 
 echo "care-provider image building"
 ./script/buildImages/care-provider-build.sh
 
-echo "user-service image building"
-./script/buildImages/user-service-build.sh
+#echo "user-service image building"
+#./script/buildImages/user-service-build.sh
 
 echo "booking-service image building"
 ./script/buildImages/booking-service-build.sh

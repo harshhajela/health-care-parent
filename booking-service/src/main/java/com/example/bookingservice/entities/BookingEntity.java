@@ -24,6 +24,7 @@ public class BookingEntity {
     private UserDto provider;
     private LocalDateTime createdAt;
     private LocalDateTime bookingDate;
+    private LocalDateTime updatedAt;
     private BookingStatus bookingStatus;
     private List<String> servicesBooked;
 
