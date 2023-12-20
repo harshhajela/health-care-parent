@@ -98,6 +98,7 @@ class AuthControllerRegistrationTest extends BaseIntegrationTest {
     void failedRegistrationWithoutPasswordPattern() {
         var request = createRegistrationDto(VALID_EMAIL);
         request.setPassword("password123");
+        request.setConfirmPassword("password123");
         // @formatter:off
         given().log().all()
                 .contentType(ContentType.JSON)

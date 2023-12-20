@@ -1,7 +1,5 @@
 package com.example.bookingservice;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import lombok.extern.slf4j.Slf4j;
@@ -22,14 +20,16 @@ import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 @Slf4j
 @Testcontainers
 @ActiveProfiles({"test"})
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {BookingServiceApplication.class, JwtTestUtils.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        classes = {BookingServiceApplication.class, JwtTestUtils.class, AppTestConfig.class})
 public abstract class BaseIntegrationTest {
 
     private static WireMockServer wireMockServer;
     @Container
-    private static final MongoDBContainer mongoContainer = new MongoDBContainer("mongo:latest")
+    private static final MongoDBContainer mongoContainer =
+            new MongoDBContainer("mongo:latest")
             .withExposedPorts(27017);
-//            .withDatabaseName("booking_service");
+
 
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
@@ -49,12 +49,6 @@ public abstract class BaseIntegrationTest {
 
     @BeforeAll
     public static void setUp() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        WireMockConfiguration wireMockConfiguration = WireMockConfiguration
-                .wireMockConfig()
-                .port(8000);
-//                .extensions(new JacksonMappingExtension(objectMapper));
         wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().port(8000));
         wireMockServer.start();
         configureFor("localhost", wireMockServer.port());
