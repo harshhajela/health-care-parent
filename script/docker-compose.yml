@@ -35,7 +35,7 @@ services:
   booking-service:
     image: booking-service-img
     ports:
-      - "8083:8083"
+      - "9030:9030"
     environment:
       - LOCAL_HOST=host.docker.internal
     container_name: booking-service
@@ -44,13 +44,25 @@ services:
     networks:
       - health_care_network
 
-  care-provider:
-    image: care-provider-img
+  profile-service:
+    image: profile-service-img
     ports:
-      - "8082:8082"
+      - "9020:9020"
     environment:
       - LOCAL_HOST=host.docker.internal
-    container_name: care-provider
+    container_name: profile-service
+    depends_on:
+      - api-gateway
+    networks:
+      - health_care_network
+
+  notification-service:
+    image: notification-service-img
+    ports:
+      - "9010:9010"
+    environment:
+      - LOCAL_HOST=host.docker.internal
+    container_name: notification-service
     depends_on:
       - api-gateway
     networks:
@@ -58,4 +70,3 @@ services:
 
 networks:
   health_care_network:
-    external: false

@@ -5,10 +5,10 @@ FROM openjdk:21-slim
 WORKDIR /app
 
 # Copy the JAR file from the host to the container's working directory
-COPY target/booking-service-*.jar /app/booking-service.jar
+COPY target/notification-service-*.jar /app/notification-service.jar
 
 # Expose the port that your Spring Boot app will listen on
-EXPOSE 9030
+EXPOSE 9010
 
 # Define the command to run your Spring Boot application
-CMD ["java", "-jar", "booking-service.jar"]
+CMD ["java", "-jar", "notification-service.jar"]
