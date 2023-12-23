@@ -7,6 +7,7 @@ import com.hajela.authservice.exceptions.RefreshTokenExpired;
 import com.hajela.authservice.repo.RefreshTokenRepository;
 import com.hajela.authservice.services.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -18,12 +19,14 @@ import java.util.UUID;
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
+    @Value("${jwt.expiration}")
+    private Long expiration;
 
     public RefreshTokenEntity createRefreshToken(UserEntity userEntity) {
         RefreshTokenEntity refreshTokenEntity = RefreshTokenEntity.builder()
                 .token(UUID.randomUUID().toString())
                 .user(userEntity)
-                .expiryDate(Instant.now().plusSeconds(600))
+                .expiryDate(Instant.now().plusSeconds((5*60)).plusMillis(this.expiration))
                 .build();
         return refreshTokenRepository.save(refreshTokenEntity);
     }
