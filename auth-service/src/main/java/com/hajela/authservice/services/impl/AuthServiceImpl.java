@@ -9,6 +9,7 @@ import com.hajela.authservice.exceptions.ActivateAccountException;
 import com.hajela.authservice.exceptions.ForgotPasswordException;
 import com.hajela.authservice.exceptions.RefreshTokenNotFound;
 import com.hajela.authservice.exceptions.ResetForgotPasswordException;
+import com.hajela.authservice.messaging.MessageProducerService;
 import com.hajela.authservice.services.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +27,8 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenService refreshTokenService;
     private final UserActivationService userActivationService;
     private final ForgotPasswordService forgotPasswordService;
-    private final EmailService emailService;
     private final JwtUtils jwtUtils;
+    private final MessageProducerService messageProducerService;
 
     public AuthResponse login(AuthRequest authRequest) {
         UserEntity userEntity = userService.login(authRequest);
@@ -73,7 +74,7 @@ public class AuthServiceImpl implements AuthService {
                 .ifPresentOrElse(user -> {
                     userService.updateUserStatusToForgotPassword(user);
                     ForgotPasswordEntity forgotPasswordEntity = forgotPasswordService.createForgotPasswordForUser(user);
-                    emailService.sendForgotPassword(forgotPasswordEntity);
+                    messageProducerService.sendForgotPassword(forgotPasswordEntity);
                 }, () -> {
                     throw new ForgotPasswordException("Could not find user with email:" + forgotPasswordDto.getEmail());
                 });

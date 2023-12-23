@@ -1,8 +1,6 @@
 package com.hajela.apigateway.config;
 
-import com.hajela.apigateway.exceptions.ExpiredTokenException;
 import com.hajela.apigateway.services.JwtUtils;
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.context.config.annotation.RefreshScope;

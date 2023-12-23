@@ -35,7 +35,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final EmailServiceImpl emailServiceImpl;
     private final UserActivationService activationService;
 
     public Optional<UserEntity> findUserByEmail(String email) {
@@ -59,7 +58,6 @@ public class UserServiceImpl implements UserService {
         userEntity = userRepository.save(userEntity);
         log.info("Created New User={}", userEntity);
         activationService.createNewActivationCode(userEntity);
-        emailServiceImpl.sendActivationEmail(userEntity);
     }
 
     public Page<UserDto> findAllUsers(Pageable pageable, String role) {
