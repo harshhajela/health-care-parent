@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ApiGatewayConfig {
 
-    public static final String LB_AUTH_SERVICE = "lb://auth-service";
-    public static final String LB_PROVIDER_SERVICE = "lb://provider-service";
+    public static final String LB_AUTH_SERVICE = "lb://AUTH-SERVICE";
+    public static final String LB_PROVIDER_SERVICE = "lb://PROFILE-SERVICE";
     public static final String LB_BOOKING_SERVICE = "lb://BOOKING-SERVICE";
 
     @Bean
