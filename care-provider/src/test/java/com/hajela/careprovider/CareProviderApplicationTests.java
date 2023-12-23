@@ -2,18 +2,14 @@ package com.hajela.careprovider;
 
 import io.restassured.RestAssured;
 import io.restassured.config.RestAssuredConfig;
-import io.restassured.http.ContentType;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import static io.restassured.RestAssured.given;
 import static io.restassured.config.JsonConfig.jsonConfig;
 import static io.restassured.path.json.config.JsonPathConfig.NumberReturnType.BIG_DECIMAL;
-import static org.hamcrest.Matchers.notNullValue;
 
 @Slf4j
 @Rollback

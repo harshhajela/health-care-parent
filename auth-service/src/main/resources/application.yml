@@ -34,6 +34,14 @@ spring:
             connectiontimeout: 5000
             timout: 3000
             writetimeout: 5000
+  jms:
+    pub-sub-domain: true
+  artemis:
+    mode: native
+    host: localhost
+    port: 61616
+    user: artemis
+    password: artemis
 
 eureka:
   instance:
@@ -46,15 +54,12 @@ eureka:
 jwt:
   secret: f7e4feb04b5931273685ec897831a2cd44da8ba567756e09b825cf93847ff001
   expiration: 900000
-#  expiration: 60000
 
-
-email:
-  enabled: true
-  user:
-    activation-link: http://localhost:4200/activate-account?token=%s
-    forgot-password-link: http://localhost:4200/reset-password?token=%s
 
 registration:
   validation:
     password-pattern: ^(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).{8,}$
+
+queue-name:
+    user-activation: user.activation.queue
+    user-forgot-password: user.forgot.password.queue

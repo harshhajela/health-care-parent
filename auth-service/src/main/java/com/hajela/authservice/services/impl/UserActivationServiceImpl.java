@@ -3,6 +3,7 @@ package com.hajela.authservice.services.impl;
 import com.hajela.authservice.entities.UserActivationEntity;
 import com.hajela.authservice.entities.UserEntity;
 import com.hajela.authservice.exceptions.ActivateAccountException;
+import com.hajela.authservice.messaging.MessageProducerService;
 import com.hajela.authservice.repo.UserActivationRepository;
 import com.hajela.authservice.services.UserActivationService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class UserActivationServiceImpl implements UserActivationService {
 
 
     private final UserActivationRepository userActivationRepository;
+    private final MessageProducerService messageProducerService;
 
     @Override
     public void createNewActivationCode(UserEntity user) {
@@ -33,6 +35,7 @@ public class UserActivationServiceImpl implements UserActivationService {
                 .build();
 
         userActivationRepository.save(activationEntity);
+        messageProducerService.sendUserActivationMessage(activationEntity);
     }
 
     @Override
