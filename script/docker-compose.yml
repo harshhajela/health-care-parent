@@ -5,6 +5,8 @@ services:
     ports:
       - "8761:8761"
     container_name: discovery-server
+    environment:
+      - DOCKER_HOST=host.docker.internal
     networks:
       - health_care_network
 
@@ -13,7 +15,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - LOCAL_HOST=host.docker.internal
+      - DOCKER_HOST=host.docker.internal
     container_name: api-gateway
     depends_on:
       - discovery-server
@@ -25,7 +27,7 @@ services:
     ports:
       - "9000:9000"
     environment:
-      - LOCAL_HOST=host.docker.internal
+      - DOCKER_HOST=host.docker.internal
     container_name: auth-service
     depends_on:
       - api-gateway
@@ -37,7 +39,7 @@ services:
     ports:
       - "9030:9030"
     environment:
-      - LOCAL_HOST=host.docker.internal
+      - DOCKER_HOST=host.docker.internal
     container_name: booking-service
     depends_on:
       - api-gateway
@@ -49,7 +51,7 @@ services:
     ports:
       - "9020:9020"
     environment:
-      - LOCAL_HOST=host.docker.internal
+      - DOCKER_HOST=host.docker.internal
     container_name: profile-service
     depends_on:
       - api-gateway
@@ -61,10 +63,59 @@ services:
     ports:
       - "9010:9010"
     environment:
-      - LOCAL_HOST=host.docker.internal
+      - DOCKER_HOST=host.docker.internal
     container_name: notification-service
     depends_on:
       - api-gateway
+    networks:
+      - health_care_network
+
+  loki:
+    image: grafana/loki:main
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - health_care_network
+
+  prometheus:
+    image: prom/prometheus:v2.46.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - --enable-feature=exemplar-storage
+      - --config.file=/etc/prometheus/prometheus.yml
+    networks:
+      - health_care_network
+
+  tempo:
+    image: grafana/tempo:2.2.2
+    container_name: tempo
+    ports:
+      - "3110:3100"
+      - "9411:9411"
+    volumes:
+      - ./tempo/tempo.yml:/etc/tempo.yaml:ro
+      - ./tempo/tempo-data:/tmp/tempo
+    command: -config.file=/etc/tempo.yaml
+    networks:
+      - health_care_network
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana:/etc/grafana/provisioning/datasources:ro
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
     networks:
       - health_care_network
 

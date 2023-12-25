@@ -3,17 +3,17 @@ server:
 
 eureka:
   instance:
-    hostname: ${LOCAL_HOST:localhost}
+    hostname: ${DOCKER_HOST:localhost}
   client:
     service-url:
-      defaultZone: http://${LOCAL_HOST:localhost}:8761/eureka
+      defaultZone: http://${DOCKER_HOST:localhost}:8761/eureka
 
 spring:
   application:
     name: BOOKING-SERVICE
   data:
     mongodb:
-      host: ${LOCAL_HOST:localhost}
+      host: ${DOCKER_HOST:localhost}
       port: 27017
       database: bookings
 
@@ -27,3 +27,24 @@ logging:
 jwt:
   secret: f7e4feb04b5931273685ec897831a2cd44da8ba567756e09b825cf93847ff001
   expiration: 300000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health, info, metrics, prometheus"
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+  observations:
+    key-values:
+      application: ${spring.application.name}
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://${DOCKER_HOST:localhost}:9411/api/v2/spans

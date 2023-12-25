@@ -5,7 +5,7 @@ spring:
   application:
     name: AUTH-SERVICE
   datasource:
-    url: jdbc:postgresql://${LOCAL_HOST:localhost}:5432/user_db
+    url: jdbc:postgresql://${DOCKER_HOST:localhost}:5432/user_db
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -19,21 +19,6 @@ spring:
     show-sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-  mail:
-    host: localhost
-    port: 1025
-    username: hello
-    password: hello
-    properties:
-      mail:
-        smtp:
-          ssl:
-            trust: "*"
-            starttls:
-              enable: true
-            connectiontimeout: 5000
-            timout: 3000
-            writetimeout: 5000
   jms:
     pub-sub-domain: true
   artemis:
@@ -45,16 +30,14 @@ spring:
 
 eureka:
   instance:
-    hostname: ${LOCAL_HOST:localhost}
+    hostname: ${DOCKER_HOST:localhost}
   client:
     service-url:
-      defaultZone: http://${LOCAL_HOST:localhost}:8761/eureka
-
+      defaultZone: http://${DOCKER_HOST:localhost}:8761/eureka
 
 jwt:
   secret: f7e4feb04b5931273685ec897831a2cd44da8ba567756e09b825cf93847ff001
   expiration: 900000
-
 
 registration:
   validation:
@@ -63,3 +46,24 @@ registration:
 queue-name:
     user-activation: user.activation.queue
     user-forgot-password: user.forgot.password.queue
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health, info, metrics, prometheus"
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+  observations:
+    key-values:
+      application: ${spring.application.name}
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://${DOCKER_HOST:localhost}:9411/api/v2/spans

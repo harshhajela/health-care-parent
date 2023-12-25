@@ -12,3 +12,24 @@ server:
 spring:
   application:
     name: discovery-server
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health, info, metrics, prometheus"
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+  observations:
+    key-values:
+      application: ${spring.application.name}
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://${DOCKER_HOST:localhost}:9411/api/v2/spans
