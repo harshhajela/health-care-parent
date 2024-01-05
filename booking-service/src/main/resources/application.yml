@@ -11,6 +11,8 @@ eureka:
 spring:
   application:
     name: BOOKING-SERVICE
+  profiles:
+    active: kafka
   data:
     mongodb:
       host: ${DOCKER_HOST:localhost}
