@@ -4,19 +4,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hajela.authservice.entities.ForgotPasswordEntity;
 import com.hajela.authservice.entities.UserActivationEntity;
-import com.hajela.authservice.messaging.dto.ForgotPasswordMessage;
-import com.hajela.authservice.messaging.dto.UserActivationMessage;
+
+import com.hajela.commons.messaging.ForgotPasswordMessage;
+import com.hajela.commons.messaging.UserActivationMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@Profile("artemis")
 @RequiredArgsConstructor
-public class ArtemisMessageProducerService implements MessageProducerService {
+public class ArtemisMessageProducer implements MessageProducer {
 
     private final JmsTemplate jmsTemplate;
     private final ObjectMapper objectMapper;
@@ -30,7 +33,11 @@ public class ArtemisMessageProducerService implements MessageProducerService {
     @Async
     @Override
     public void sendUserActivationMessage(UserActivationEntity userActivationEntity) {
-        UserActivationMessage userActivationMessage = UserActivationMessage.from(userActivationEntity);
+        UserActivationMessage userActivationMessage = UserActivationMessage.builder()
+                .email(userActivationEntity.getUser().getEmail())
+                .role(userActivationEntity.getUser().getRole().getName().getRoleName())
+                .activationToken(userActivationEntity.getToken())
+                .build();
         String jsonMessage = "";
         try {
             jsonMessage = objectMapper.writeValueAsString(userActivationMessage);
@@ -43,7 +50,10 @@ public class ArtemisMessageProducerService implements MessageProducerService {
 
     @Override
     public void sendForgotPassword(ForgotPasswordEntity forgotPasswordEntity) {
-        ForgotPasswordMessage message = ForgotPasswordMessage.from(forgotPasswordEntity);
+        ForgotPasswordMessage message = ForgotPasswordMessage.builder()
+                .email(forgotPasswordEntity.getUser().getEmail())
+                .token(forgotPasswordEntity.getToken())
+                .build();
         String jsonMessage = "";
         try {
             jsonMessage = objectMapper.writeValueAsString(message);
@@ -53,6 +63,5 @@ public class ArtemisMessageProducerService implements MessageProducerService {
         jmsTemplate.convertAndSend(forgotPasswordQueueName, jsonMessage);
         log.info("Forgot password message sent: {}", jsonMessage);
     }
-
 
 }
