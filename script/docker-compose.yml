@@ -7,6 +7,7 @@ services:
     container_name: discovery-server
     environment:
       - DOCKER_HOST=host.docker.internal
+      - SPRING_PROFILES_ACTIVE=docker
     networks:
       - health_care_network
 
@@ -16,6 +17,7 @@ services:
       - "8080:8080"
     environment:
       - DOCKER_HOST=host.docker.internal
+      - SPRING_PROFILES_ACTIVE=docker
     container_name: api-gateway
     depends_on:
       - discovery-server
@@ -27,6 +29,7 @@ services:
     ports:
       - "9000:9000"
     environment:
+      - SPRING_PROFILES_ACTIVE=kafka,docker
       - DOCKER_HOST=host.docker.internal
       - KAFKA_HOST=kafka:9092
     container_name: auth-service
@@ -40,6 +43,7 @@ services:
     ports:
       - "9030:9030"
     environment:
+      - SPRING_PROFILES_ACTIVE=kafka,docker
       - DOCKER_HOST=host.docker.internal
     container_name: booking-service
     depends_on:
@@ -52,6 +56,7 @@ services:
     ports:
       - "9020:9020"
     environment:
+      - SPRING_PROFILES_ACTIVE=kafka,docker
       - DOCKER_HOST=host.docker.internal
     container_name: profile-service
     depends_on:
@@ -64,6 +69,7 @@ services:
     ports:
       - "9010:9010"
     environment:
+      - SPRING_PROFILES_ACTIVE=kafka,docker
       - DOCKER_HOST=host.docker.internal
       - KAFKA_HOST=kafka:9092
       - MAILDEV_HOST=host.docker.internal

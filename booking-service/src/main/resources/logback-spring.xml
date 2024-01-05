@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
     <springProperty scope="context" name="appName" source="spring.application.name"/>
     <springProperty scope="context" name="lokiUrl" source="DOCKER_HOST" defaultValue="localhost"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{HH:mm:ss.SSS} %-5level %logger{36} %line %X{X-Request-ID} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
 
     <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
         <http>
@@ -19,7 +28,16 @@
         </format>
     </appender>
 
-    <root level="INFO">
-        <appender-ref ref="LOKI"/>
-    </root>
+    <springProfile name="!docker">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
+    <springProfile name="docker">
+        <root level="INFO">
+            <appender-ref ref="LOKI"/>
+        </root>
+    </springProfile>
+
 </configuration>
