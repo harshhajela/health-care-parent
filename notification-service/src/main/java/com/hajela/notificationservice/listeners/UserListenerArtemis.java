@@ -2,16 +2,18 @@ package com.hajela.notificationservice.listeners;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hajela.notificationservice.dto.ForgotPasswordMessage;
-import com.hajela.notificationservice.dto.UserActivationMessage;
+import com.hajela.commons.messaging.ForgotPasswordMessage;
+import com.hajela.commons.messaging.UserActivationMessage;
 import com.hajela.notificationservice.services.EmailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("artemis")
 @RequiredArgsConstructor
-public class UserListener {
+public class UserListenerArtemis {
 
     private final EmailService emailService;
     private final ObjectMapper objectMapper;

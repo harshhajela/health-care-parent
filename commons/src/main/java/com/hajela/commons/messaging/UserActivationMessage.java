@@ -1,9 +1,6 @@
-package com.hajela.notificationservice.dto;
+package com.hajela.commons.messaging;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -14,6 +11,6 @@ import java.io.Serializable;
 public class UserActivationMessage implements Serializable {
     private String email;
     private String role;
-//    private LocalDateTime createdAt;
+    @ToString.Exclude
     private String activationToken;
 }

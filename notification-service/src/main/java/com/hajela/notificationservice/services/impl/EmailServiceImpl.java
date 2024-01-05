@@ -1,7 +1,7 @@
 package com.hajela.notificationservice.services.impl;
 
-import com.hajela.notificationservice.dto.ForgotPasswordMessage;
-import com.hajela.notificationservice.dto.UserActivationMessage;
+import com.hajela.commons.messaging.ForgotPasswordMessage;
+import com.hajela.commons.messaging.UserActivationMessage;
 import com.hajela.notificationservice.services.EmailService;
 import com.hajela.notificationservice.services.EmailTemplates;
 import jakarta.mail.MessagingException;

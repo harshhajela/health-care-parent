@@ -13,10 +13,12 @@ eureka:
       defaultZone: http://${DOCKER_HOST:localhost}:8761/eureka
 
 spring:
+  profiles:
+    active: kafka
   application:
     name: NOTIFICATION-SERVICE
   mail:
-    host: localhost
+    host: ${MAILDEV_HOST:localhost}
     port: 1025
     username: hello
     password: hello
@@ -38,7 +40,18 @@ spring:
     port: 61616
     user: artemis
     password: artemis
-
+  kafka:
+    consumer:
+      bootstrap-servers: ${KAFKA_HOST:localhost:9092}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: NOTIFICATION-SERVICE-1
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'
+      auto-offset-reset: earliest
 
 email:
   enabled: true
