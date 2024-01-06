@@ -9,6 +9,8 @@ server:
 spring:
   application:
     name: discovery-server
+  profiles:
+    active: development
 
 management:
   endpoints:

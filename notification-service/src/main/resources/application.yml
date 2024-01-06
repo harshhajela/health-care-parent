@@ -1,10 +1,6 @@
 server:
   port: 9010
 
-logging:
-  level:
-    org.springframework.jms: DEBUG
-
 eureka:
   instance:
     hostname: ${DOCKER_HOST:localhost}
@@ -14,7 +10,7 @@ eureka:
 
 spring:
   profiles:
-    active: kafka
+    active: development
   application:
     name: NOTIFICATION-SERVICE
   mail:
@@ -32,26 +28,10 @@ spring:
             connectiontimeout: 5000
             timout: 3000
             writetimeout: 5000
-  jms:
-    pub-sub-domain: true
-  artemis:
-    mode: native
-    host: localhost
-    port: 61616
-    user: artemis
-    password: artemis
-  kafka:
-    consumer:
-      bootstrap-servers: ${KAFKA_HOST:localhost:9092}
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      group-id: NOTIFICATION-SERVICE-1
-      properties:
-        spring:
-          json:
-            trusted:
-              packages: '*'
-      auto-offset-reset: earliest
+
+
+kafka:
+  host: ${KAFKA_HOST:localhost:9092}
 
 email:
   enabled: true

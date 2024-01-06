@@ -12,7 +12,7 @@ spring:
   application:
     name: BOOKING-SERVICE
   profiles:
-    active: kafka
+    active: development
   data:
     mongodb:
       host: ${DOCKER_HOST:localhost}
