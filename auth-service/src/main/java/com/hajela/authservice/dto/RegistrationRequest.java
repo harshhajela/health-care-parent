@@ -1,5 +1,6 @@
 package com.hajela.authservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hajela.authservice.config.PasswordPattern;
 import com.hajela.authservice.entities.Role;
 import jakarta.validation.constraints.AssertTrue;
@@ -30,6 +31,7 @@ public class RegistrationRequest {
     @NotNull(message = "Role cannot be null")
     private Role role;
 
+    @JsonIgnore
     @AssertTrue(message = "Password and Confirm Password must match")
     public boolean isPasswordsMatch() {
         return password != null && password.equals(confirmPassword);
