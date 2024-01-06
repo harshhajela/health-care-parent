@@ -19,12 +19,12 @@
         </format>
     </appender>
 
-    <springProfile name="development">
+    <springProfile name="development | test">
         <root level="INFO">
         </root>
     </springProfile>
 
-    <springProfile name="!development">
+    <springProfile name="docker">
         <root level="INFO">
             <appender-ref ref="LOKI"/>
         </root>

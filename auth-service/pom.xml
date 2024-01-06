@@ -19,6 +19,7 @@
         <rest-assured.version>5.3.1</rest-assured.version>
         <springdoc-version>2.1.0</springdoc-version>
         <json.webtoken.version>0.11.5</json.webtoken.version>
+        <awaitility.version>4.2.0</awaitility.version>
     </properties>
 
     <dependencies>
@@ -165,6 +166,17 @@
             <artifactId>postgresql</artifactId>
             <version>${testcontainers.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>kafka</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>${awaitility.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.kafka</groupId>

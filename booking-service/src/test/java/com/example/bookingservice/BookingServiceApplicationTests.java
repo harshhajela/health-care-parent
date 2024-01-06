@@ -29,6 +29,7 @@ class BookingServiceApplicationTests extends BaseIntegrationTest {
     public static final String CUSTOMER_ROLE = "CUSTOMER";
     public static final String PROVIDER_EMAIL = "provider@test.com";
     public static final String PROVIDER_ROLE = "PROVIDER";
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
 
     @LocalServerPort
@@ -51,7 +52,7 @@ class BookingServiceApplicationTests extends BaseIntegrationTest {
     }
 
     @Test
-    void testPostWorksOk() {
+    void testPostBookingsWorks() {
         var createBookingDto = getBookingDto();
         String jwtToken = jwtUtils.generateToken(CUSTOMER_EMAIL, "CUSTOMER");
 
@@ -100,8 +101,6 @@ class BookingServiceApplicationTests extends BaseIntegrationTest {
 
     private String toJson(Object object) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
             return objectMapper.writeValueAsString(object);
         } catch (Exception e) {
             throw new RuntimeException("Error converting object to JSON", e);
