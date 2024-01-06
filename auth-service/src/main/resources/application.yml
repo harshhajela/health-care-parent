@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    active: kafka
+    active: development
   application:
     name: AUTH-SERVICE
   datasource:
@@ -21,14 +21,6 @@ spring:
     show-sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-  jms:
-    pub-sub-domain: true
-  artemis:
-    mode: native
-    host: localhost
-    port: 61616
-    user: artemis
-    password: artemis
 
 kafka:
   host: ${KAFKA_HOST:localhost:9092}
@@ -47,10 +39,6 @@ jwt:
 registration:
   validation:
     password-pattern: ^(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).{8,}$
-
-queue-name:
-    user-activation: user.activation.queue
-    user-forgot-password: user.forgot.password.queue
 
 management:
   endpoints:

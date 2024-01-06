@@ -12,7 +12,7 @@ spring:
   application:
     name: PROFILE-SERVICE
   profiles:
-    active: kafka
+    active: development
   servlet:
     multipart:
       enabled: true

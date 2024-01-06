@@ -48,7 +48,6 @@ public class KafkaConfig {
         return new KafkaAdmin(configs);
     }
 
-    @Bean
     public Map<String,Object> producerConfig(){
         log.info("KAFKA_HOST={}", kafkaHost);
         Map<String,Object> props=new HashMap<>();
