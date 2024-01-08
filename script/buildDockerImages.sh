@@ -8,19 +8,19 @@ echo 'Commons module built successfully!'
 
 # For all services
 echo "discovery-server image building"
-./script/buildImages/discovery-server-build.sh
+./buildImages/discovery-server-build.sh
 
 echo "api-gateway image building"
-./script/buildImages/api-gateway-build.sh
+./buildImages/api-gateway-build.sh
 
 echo "auth-service image building"
-./script/buildImages/auth-service-build.sh
+./buildImages/auth-service-build.sh
 
 echo "profile-service image building"
-./script/buildImages/profile-service-build.sh
+./buildImages/profile-service-build.sh
 
 echo "booking-service image building"
-./script/buildImages/booking-service-build.sh
+./buildImages/booking-service-build.sh
 
 echo "notification-service image building"
-./script/buildImages/notification-service-build.sh
+./buildImages/notification-service-build.sh
