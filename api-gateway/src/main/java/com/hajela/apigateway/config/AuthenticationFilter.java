@@ -19,29 +19,27 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AuthenticationFilter implements GatewayFilter {
 
-
-    private final RouterValidator validator;
     private final JwtUtils jwtUtils;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
-        log.info("Request={}", request.getPath());
         if (RouterValidator.isSecured.test(request)) {
             if (authMissing(request)) {
                 log.info("Unauthorized call received! {}", request.getPath());
                 return onError(exchange, HttpStatus.UNAUTHORIZED);
             }
-            final String token = request.getHeaders().getOrEmpty("Authorization").get(0).substring(7);
+            final String token = request.getHeaders()
+                    .getOrEmpty("Authorization")
+                    .getFirst().substring(7);
 
             try {
                 if (jwtUtils.isExpired(token)) {
-//                    throw new ExpiredTokenException("Token expired!");
+                    log.info("JWT Token has expired! {}", request.getPath());
                     return onError(exchange, HttpStatus.UNAUTHORIZED);
                 }
             } catch (Exception e) {
-                log.info("JWT token has expired: {}", e.getMessage());
-//                throw new ExpiredTokenException("Token expired!");
+                log.info("ERROR: JWT token has expired: {}", e.getMessage());
                 return onError(exchange, HttpStatus.UNAUTHORIZED);
             }
         }

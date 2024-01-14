@@ -29,6 +29,11 @@ public class ApiGatewayConfig {
                                 .filters(f -> f.filter(filter))
                                 .uri(LB_AUTH_SERVICE))
 
+                .route("auth-service-logout", r ->
+                        r.path("/v1/auth/logout")
+                                .filters(f -> f.filter(filter))
+                                .uri(LB_AUTH_SERVICE))
+
                 .route("auth-service-refreshToken", r ->
                         r.path("/v1/auth/refreshToken")
                                 .filters(f -> f.filter(filter))

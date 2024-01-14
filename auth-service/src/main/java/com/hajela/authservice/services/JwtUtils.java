@@ -1,7 +1,9 @@
 package com.hajela.authservice.services;
 
 import com.hajela.authservice.entities.UserEntity;
+import com.hajela.authservice.exceptions.InvalidAuthorizationHeaderException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class JwtUtils {
@@ -33,7 +36,7 @@ public class JwtUtils {
                 .parserBuilder()
                 .setSigningKey(key)
                 .build()
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody();
     }
 
@@ -69,5 +72,23 @@ public class JwtUtils {
 
     private boolean isExpired(String token) {
         return getExpirationDate(token).before(new Date());
+    }
+
+    public String getEmailFromHeader(String authorizationHeader) {
+        String token = extractJwtToken(authorizationHeader).orElse(null);
+        if (token == null) return null;
+        try {
+            return getClaims(token).getSubject();
+        } catch (ExpiredJwtException ex) {
+            return null;
+        }
+    }
+
+    private Optional<String> extractJwtToken(String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String extractedToken = authorizationHeader.substring(7);
+            return Optional.of(extractedToken);
+        }
+        return Optional.empty();
     }
 }

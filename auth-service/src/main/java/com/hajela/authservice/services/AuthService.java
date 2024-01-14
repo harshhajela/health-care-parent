@@ -14,5 +14,5 @@ public interface AuthService {
 
     public void resetUserPassword(ResetPasswordDto resetPasswordDto);
 
-
+    public void logout(String authorizationHeader);
 }

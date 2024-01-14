@@ -12,4 +12,6 @@ public interface RefreshTokenService {
     public Optional<RefreshTokenEntity> findByToken(String token);
 
     public RefreshTokenEntity verifyExpiration(RefreshTokenEntity token);
+
+    public void deleteTokenForUser(UserEntity userEntity);
 }

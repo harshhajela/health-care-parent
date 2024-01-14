@@ -9,6 +9,7 @@ import com.hajela.authservice.services.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -41,5 +42,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
             throw new RefreshTokenExpired(token.getToken());
         }
         return token;
+    }
+
+    @Transactional
+    public void deleteTokenForUser(UserEntity userEntity) {
+        refreshTokenRepository.deleteAllByUserUserId(userEntity.getUserId());
     }
 }
