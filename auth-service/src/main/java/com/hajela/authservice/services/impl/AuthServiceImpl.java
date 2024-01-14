@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -95,6 +96,16 @@ public class AuthServiceImpl implements AuthService {
                          new ResetForgotPasswordException("No reset password entity found by token" + resetPasswordDto.getToken()));
         } else {
             throw new ResetForgotPasswordException("New password and confirm password do not match.");
+        }
+    }
+
+    @Override
+    public void logout(String authorizationHeader) {
+        String email = jwtUtils.getEmailFromHeader(authorizationHeader);
+        if (email != null) {
+            Optional<UserEntity> optionalUser = userService.findUserByEmail(email);
+            optionalUser.ifPresent(refreshTokenService::deleteTokenForUser);
+            log.info("Logged out {}", email);
         }
     }
 }

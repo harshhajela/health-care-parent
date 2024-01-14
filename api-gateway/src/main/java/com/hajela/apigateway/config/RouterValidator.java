@@ -14,6 +14,7 @@ public class RouterValidator {
     public static final List<String> openEndpoints = List.of(
             "/v1/auth/register",
             "/v1/auth/login",
+            "/v1/auth/logout",
             "/v1/auth/refreshToken",
             "/v1/auth/activate",
             "/v1/auth/forgotPassword",
@@ -22,8 +23,5 @@ public class RouterValidator {
 
     public static final Predicate<ServerHttpRequest> isSecured =
             request -> openEndpoints.stream()
-                    .noneMatch(uri -> {
-                        log.info("uri={}", uri);
-                        return request.getURI().getPath().contains(uri);
-                    });
+                    .noneMatch(uri -> request.getURI().getPath().contains(uri));
 }
