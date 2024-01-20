@@ -1,9 +1,6 @@
 package com.hajela.authservice.services;
 
-import com.hajela.authservice.dto.AuthRequest;
-import com.hajela.authservice.dto.RegistrationRequest;
-import com.hajela.authservice.dto.ResetPasswordDto;
-import com.hajela.authservice.dto.UserDto;
+import com.hajela.authservice.dto.*;
 import com.hajela.authservice.entities.RoleEntity;
 import com.hajela.authservice.entities.UserEntity;
 import org.springframework.data.domain.Page;
@@ -19,7 +16,7 @@ public interface UserService {
 
     public Page<UserDto> findAllUsers(Pageable pageable, String role);
 
-    public UserDto findUserById(Long userId);
+    public Optional<UserEntity> findUserById(Long userId);
 
     public RoleEntity saveRole(RoleEntity role);
 
@@ -30,4 +27,6 @@ public interface UserService {
     public void updateUserStatusToForgotPassword(UserEntity user);
 
     public void resetUserPassword(UserEntity user, ResetPasswordDto resetPasswordDto);
+
+    void updatePassword(Long userId, UpdateUserPasswordDto userPasswordDto);
 }

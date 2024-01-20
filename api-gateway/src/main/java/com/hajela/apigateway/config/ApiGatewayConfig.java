@@ -54,6 +54,11 @@ public class ApiGatewayConfig {
                                 .filters(f -> f.filter(filter))
                                 .uri(LB_AUTH_SERVICE))
 
+                .route("auth-service-reset-user-password", r ->
+                        r.path("/v1/users/reset-password/**")
+                                .filters(f -> f.filter(filter))
+                                .uri(LB_AUTH_SERVICE))
+
                 .route("user-service-get-all", r ->
                         r.path("/v1/users")
                                 .filters(f -> f.filter(filter))
