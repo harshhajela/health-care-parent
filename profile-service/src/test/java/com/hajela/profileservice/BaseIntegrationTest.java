@@ -13,7 +13,8 @@ import org.testcontainers.junit.jupiter.Container;
 
 @Slf4j
 @Rollback
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {ProfileServiceApplication.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        classes = {ProfileServiceApplication.class, JwtTestUtils.class})
 public abstract class BaseIntegrationTest {
 
     @Container
@@ -24,7 +25,6 @@ public abstract class BaseIntegrationTest {
 
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
-        log.info("Setting postgres properties");
         startContainerIfNotRunning(); // Ensure container is started
         registry.add("spring.data.mongodb.uri", mongoContainer::getReplicaSetUrl);
         registry.add("eureka.client.enabled", () -> "false");
@@ -44,7 +44,7 @@ public abstract class BaseIntegrationTest {
 
     @AfterAll
     public static void tearDown() {
-        log.info("Stopping MongoDB container and Wiremock server");
+        log.info("Stopping MongoDB container");
         mongoContainer.stop();
     }
 

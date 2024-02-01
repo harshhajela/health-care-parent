@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #Build commons module
-cd commons
+cd ../commons
 mvn clean install
 cd ..
 echo 'Commons module built successfully!'
-
+cd ../script
 # For all services
 echo "discovery-server image building"
 ./script/buildImages/discovery-server-build.sh

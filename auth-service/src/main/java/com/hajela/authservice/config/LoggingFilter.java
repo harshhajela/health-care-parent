@@ -1,4 +1,4 @@
-package com.hajela.profileservice.config;
+package com.hajela.authservice.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,10 +26,8 @@ public class LoggingFilter extends OncePerRequestFilter {
         filterChain.doFilter(requestWrapper, responseWrapper);
         long timeTaken = System.currentTimeMillis() - startTime;
 
-        String requestBody = getStringValue(requestWrapper.getContentAsByteArray(),
-                request.getCharacterEncoding());
-        String responseBody = getStringValue(responseWrapper.getContentAsByteArray(),
-                response.getCharacterEncoding());
+        String requestBody = getStringValue(requestWrapper.getContentAsByteArray(), request.getCharacterEncoding());
+        /*String responseBody = getStringValue(responseWrapper.getContentAsByteArray(), response.getCharacterEncoding());*/
 
         if (!request.getRequestURI().equalsIgnoreCase("/actuator/prometheus")) log.info(
                 "FINISHED PROCESSING : METHOD={}; REQUEST_URI={}; RESPONSE_CODE={}; TIME_TAKEN={} REQUEST_PAYLOAD={};",

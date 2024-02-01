@@ -1,11 +1,13 @@
 package com.example.bookingservice.controller;
 
 import com.example.bookingservice.dto.BookingDto;
+import com.example.bookingservice.dto.BookingHistoryResponseDto;
 import com.example.bookingservice.dto.CreateBookingDto;
 import com.example.bookingservice.dto.UpdateBookingDto;
 import com.example.bookingservice.entities.BookingEntity;
 import com.example.bookingservice.service.BookingService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -13,6 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/bookings")
@@ -28,9 +31,12 @@ public class BookingController {
     }
 
     @GetMapping(value = "/history")
-    public ResponseEntity<List<BookingDto>> getBookingHistory(
+    public ResponseEntity<BookingHistoryResponseDto> getBookingHistory(
             @RequestHeader(name = "Authorization") String authorizationHeader) {
-        return ResponseEntity.ok(bookingService.getBookingHistory(authorizationHeader));
+        List<BookingDto> bookingHistory = bookingService.getBookingHistory(authorizationHeader);
+        BookingHistoryResponseDto responseDto = new BookingHistoryResponseDto(bookingHistory);
+        log.info("{}", responseDto);
+        return ResponseEntity.ok(responseDto);
     }
 
     @PostMapping

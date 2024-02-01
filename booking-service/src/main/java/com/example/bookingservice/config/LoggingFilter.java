@@ -31,8 +31,8 @@ public class LoggingFilter extends OncePerRequestFilter {
         /*String responseBody = getStringValue(responseWrapper.getContentAsByteArray(),
                 response.getCharacterEncoding());*/
 
-        log.info(
-                "FINISHED PROCESSING : METHOD={}; REQUESTURI={}; RESPONSE CODE={}; TIME TAKEN={} REQUEST PAYLOAD={};",
+        if (!request.getRequestURI().equalsIgnoreCase("/actuator/prometheus")) log.info(
+                "FINISHED PROCESSING : METHOD={}; REQUEST_URI={}; RESPONSE_CODE={}; TIME_TAKEN={} REQUEST_PAYLOAD={};",
                 request.getMethod(), request.getRequestURI(), response.getStatus(), timeTaken, requestBody);
         responseWrapper.copyBodyToResponse();
     }
