@@ -104,7 +104,7 @@ public class GlobalExceptionHandling {
     protected ResponseEntity<ErrorResponse> handleIncorrectPasswordException(IncorrectPasswordException exception) {
         return new ResponseEntity<>(ErrorResponse.builder()
                 .code("incorrect.password")
-                .message("Incorrect Password provided for email=" + exception.getMessage())
+                .message(exception.getMessage())
                 .build(), HttpStatus.BAD_REQUEST);
     }
 
@@ -137,6 +137,14 @@ public class GlobalExceptionHandling {
         return new ResponseEntity<>(ErrorResponse.builder()
                 .code("invalid.role")
                 .message(String.format("Role %s is not supported", exception.getMessage()))
+                .build(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserIdNotFoundException.class)
+    protected ResponseEntity<ErrorResponse> handleUserIdNotFoundException(UserIdNotFoundException ex) {
+        return new ResponseEntity<>(ErrorResponse.builder()
+                .code("invalid.user.id")
+                .message(ex.getMessage())
                 .build(), HttpStatus.BAD_REQUEST);
     }
 

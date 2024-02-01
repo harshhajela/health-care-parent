@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class ApiGatewayConfig {
 
     public static final String LB_AUTH_SERVICE = "lb://AUTH-SERVICE";
-    public static final String LB_PROVIDER_SERVICE = "lb://PROFILE-SERVICE";
+    public static final String LB_PROFILE_SERVICE = "lb://PROFILE-SERVICE";
     public static final String LB_BOOKING_SERVICE = "lb://BOOKING-SERVICE";
 
     @Bean
@@ -54,6 +54,11 @@ public class ApiGatewayConfig {
                                 .filters(f -> f.filter(filter))
                                 .uri(LB_AUTH_SERVICE))
 
+                .route("auth-service-reset-user-password", r ->
+                        r.path("/v1/users/reset-password/**")
+                                .filters(f -> f.filter(filter))
+                                .uri(LB_AUTH_SERVICE))
+
                 .route("user-service-get-all", r ->
                         r.path("/v1/users")
                                 .filters(f -> f.filter(filter))
@@ -67,16 +72,22 @@ public class ApiGatewayConfig {
                 .route("provider-profile-get", r ->
                         r.path("/v1/provider/profile/**")
                                 .filters(f -> f.filter(filter))
-                                .uri(LB_PROVIDER_SERVICE))
+                                .uri(LB_PROFILE_SERVICE))
                 .route("provider-profile-post", r ->
                         r.path("/v1/provider/profile")
                                 .filters(f -> f.filter(filter))
-                                .uri(LB_PROVIDER_SERVICE))
+                                .uri(LB_PROFILE_SERVICE))
 
                 .route("provider-documents", r ->
                         r.path("/v1/provider/documents")
                                 .filters(f -> f.filter(filter))
-                                .uri(LB_PROVIDER_SERVICE))
+                                .uri(LB_PROFILE_SERVICE))
+
+                /*CUSTOMER PROFILE*/
+                .route("customer-profile", r ->
+                        r.path("/v1/customer/profile")
+                                .filters(f -> f.filter(filter))
+                                .uri(LB_PROFILE_SERVICE))
 
                 /*BOOKING SERVICE ROUTES*/
                 .route("create-booking", r ->

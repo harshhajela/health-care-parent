@@ -41,7 +41,6 @@ public class JwtUtils {
     public String getEmailFromHeader(String authorizationHeader) {
         String token = extractJwtToken(authorizationHeader);
         String subject = getClaims(token).getSubject();
-        log.info("subject={}", subject);
         return subject;
     }
 

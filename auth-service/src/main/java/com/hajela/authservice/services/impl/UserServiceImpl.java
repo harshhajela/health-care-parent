@@ -1,10 +1,7 @@
 package com.hajela.authservice.services.impl;
 
 
-import com.hajela.authservice.dto.AuthRequest;
-import com.hajela.authservice.dto.RegistrationRequest;
-import com.hajela.authservice.dto.ResetPasswordDto;
-import com.hajela.authservice.dto.UserDto;
+import com.hajela.authservice.dto.*;
 import com.hajela.authservice.entities.Role;
 import com.hajela.authservice.entities.RoleEntity;
 import com.hajela.authservice.entities.UserEntity;
@@ -71,10 +68,8 @@ public class UserServiceImpl implements UserService {
         return new PageImpl<>(userDtoList, pageable, userPage.getTotalElements());
     }
 
-    public UserDto findUserById(Long userId) {
-        return userRepository.findById(userId)
-                .map(UserDto::from)
-                .orElseThrow(() -> new UserIdNotFoundException(userId));
+    public Optional<UserEntity> findUserById(Long userId) {
+        return userRepository.findById(userId);
     }
 
     public RoleEntity saveRole(RoleEntity role) {
@@ -85,18 +80,17 @@ public class UserServiceImpl implements UserService {
 
     public UserEntity login(AuthRequest authRequest) {
 
-        UserEntity user = userRepository.findByEmail(authRequest.getEmail())
+        UserEntity userEntity = userRepository.findByEmail(authRequest.getEmail())
                 .orElseThrow(() -> new InvalidEmailException(authRequest.getEmail()));
 
-        if (!UserStatus.ACTIVATED.name().equals(user.getStatus())) {
-            throw new UserStatusBlockedException(user.getStatus());
+        if (!UserStatus.ACTIVATED.name().equals(userEntity.getStatus())) {
+            throw new UserStatusBlockedException(userEntity.getStatus());
         }
 
-        boolean passwordMatches = passwordEncoder.matches(authRequest.getPassword(), user.getPassword());
-        log.info("Password matches {}", passwordMatches);
+        boolean passwordMatches = passwordEncoder.matches(authRequest.getPassword(), userEntity.getPassword());
 
         if (passwordMatches) {
-            return user;
+            return userEntity;
         }
 
         throw new IncorrectPasswordException(authRequest.getEmail());
@@ -115,5 +109,19 @@ public class UserServiceImpl implements UserService {
     public void resetUserPassword(UserEntity user, ResetPasswordDto resetPasswordDto) {
         user.setPassword(passwordEncoder.encode(resetPasswordDto.getNewPassword()));
         userRepository.save(user);
+    }
+
+    @Override
+    public void updatePassword(Long userId, UpdateUserPasswordDto userPasswordDto) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new UserIdNotFoundException(userId));
+
+        boolean passwordMatches = passwordEncoder.matches(userPasswordDto.getCurrentPassword(), userEntity.getPassword());
+        if (!passwordMatches) {
+            throw new IncorrectPasswordException();
+        }
+
+        userEntity.setPassword(passwordEncoder.encode(userPasswordDto.getNewPassword()));
+        userRepository.save(userEntity);
     }
 }
