@@ -19,6 +19,7 @@ public class ApiGatewayConfig {
     public RouteLocator routes(RouteLocatorBuilder builder, AuthenticationFilter filter) {
         return builder.routes()
 
+                // AUTH-SERVICE
                 .route("auth-service-register", r ->
                         r.path("/v1/auth/register")
                                 .filters(f -> f.filter(filter))
@@ -69,6 +70,8 @@ public class ApiGatewayConfig {
                                 .filters(f -> f.filter(filter))
                                 .uri(LB_AUTH_SERVICE))
 
+
+                // PROFILE-SERVICE
                 .route("provider-profile-get", r ->
                         r.path("/v1/provider/profile/**")
                                 .filters(f -> f.filter(filter))
@@ -89,7 +92,7 @@ public class ApiGatewayConfig {
                                 .filters(f -> f.filter(filter))
                                 .uri(LB_PROFILE_SERVICE))
 
-                /*BOOKING SERVICE ROUTES*/
+                //BOOKING SERVICE ROUTES
                 .route("create-booking", r ->
                         r.path("/v1/bookings")
                                 .filters(f -> f.filter(filter))
