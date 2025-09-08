@@ -4,6 +4,14 @@ import com.hajela.profileservice.dto.ProviderProfileDto;
 import com.hajela.profileservice.dto.ProvidersDto;
 import com.hajela.profileservice.entity.ProviderProfileEntity;
 import com.hajela.profileservice.service.ProviderProfileService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +25,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/v1/provider/profile")
 @RequiredArgsConstructor
+@Tag(name = "Provider Profile", description = "Healthcare provider profile management operations")
+@SecurityRequirement(name = "bearerAuth")
 public class ProviderProfileController {
 
     private final ProviderProfileService providerService;

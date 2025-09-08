@@ -7,9 +7,9 @@ spring:
   application:
     name: AUTH-SERVICE
   datasource:
-    url: jdbc:postgresql://${DOCKER_HOST:localhost}:5432/user_db
+    url: jdbc:postgresql://${DOCKER_HOST:localhost}:5432/health-care-parent
     username: postgres
-    password: postgres
+    password: password
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:

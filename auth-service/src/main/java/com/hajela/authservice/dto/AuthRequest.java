@@ -13,4 +13,5 @@ public class AuthRequest {
     private String email;
     @ToString.Exclude
     private String password;
+    private Boolean rememberMe;
 }

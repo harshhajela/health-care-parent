@@ -14,6 +14,8 @@ public class ApiGatewayConfig {
     public static final String LB_AUTH_SERVICE = "lb://AUTH-SERVICE";
     public static final String LB_PROFILE_SERVICE = "lb://PROFILE-SERVICE";
     public static final String LB_BOOKING_SERVICE = "lb://BOOKING-SERVICE";
+    public static final String LB_PRODUCTS_SERVICE = "lb://PRODUCTS";
+    public static final String LB_NOTIFICATION_SERVICE = "lb://NOTIFICATION-SERVICE";
 
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder, AuthenticationFilter filter) {
@@ -99,6 +101,46 @@ public class ApiGatewayConfig {
                                 .uri(LB_BOOKING_SERVICE))
                 .route("booking-api-calls", r ->
                         r.path("/v1/bookings/**")
+                                .filters(f -> f.filter(filter))
+                                .uri(LB_BOOKING_SERVICE))
+
+                // DASHBOARD ROUTES
+                .route("customer-dashboard", r ->
+                        r.path("/v1/customer/dashboard")
+                                .filters(f -> f.filter(filter))
+                                .uri(LB_AUTH_SERVICE))
+
+                .route("provider-dashboard", r ->
+                        r.path("/v1/provider/dashboard")
+                                .filters(f -> f.filter(filter))
+                                .uri(LB_AUTH_SERVICE))
+
+                .route("admin-dashboard", r ->
+                        r.path("/v1/admin/dashboard")
+                                .filters(f -> f.filter(filter))
+                                .uri(LB_AUTH_SERVICE))
+
+                // PRODUCTS SERVICE ROUTES
+                .route("healthcare-services", r ->
+                        r.path("/v1/healthcare-services/**")
+                                .filters(f -> f.filter(filter))
+                                .uri(LB_PRODUCTS_SERVICE))
+
+                // NOTIFICATION SERVICE ROUTES
+                .route("notifications", r ->
+                        r.path("/v1/notifications/**")
+                                .filters(f -> f.filter(filter))
+                                .uri(LB_NOTIFICATION_SERVICE))
+
+                // PROVIDER LOCATION ROUTES
+                .route("provider-location", r ->
+                        r.path("/v1/provider/locations/**")
+                                .filters(f -> f.filter(filter))
+                                .uri(LB_BOOKING_SERVICE))
+
+                // WEBSOCKET ROUTES
+                .route("booking-websocket", r ->
+                        r.path("/ws/**")
                                 .filters(f -> f.filter(filter))
                                 .uri(LB_BOOKING_SERVICE))
 

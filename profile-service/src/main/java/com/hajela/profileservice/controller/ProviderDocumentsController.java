@@ -3,6 +3,14 @@ package com.hajela.profileservice.controller;
 import com.hajela.profileservice.dto.DocumentInfoDto;
 import com.hajela.profileservice.dto.ResponseMessage;
 import com.hajela.profileservice.service.ProviderDocumentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +22,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/provider/documents")
 @RequiredArgsConstructor
+@Tag(name = "Provider Documents", description = "Healthcare provider document management operations")
+@SecurityRequirement(name = "bearerAuth")
 public class ProviderDocumentsController {
 
     private final ProviderDocumentService documentService;

@@ -23,11 +23,13 @@ spring:
         locator:
           enabled: true
       default-filters:
-        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin Access-Control-Allow-Headers Access-Control-Allow-Methods Access-Control-Expose-Headers
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: '*'
+            allowedOrigins: 
+              - 'http://localhost:4200'
+              - 'http://localhost:3000'
             allowedHeaders: '*'
             allowedMethods:
               - GET
@@ -35,6 +37,11 @@ spring:
               - PUT
               - DELETE
               - PATCH
+              - OPTIONS
+            allowCredentials: true
+            exposedHeaders:
+              - Authorization
+              - Content-Type
 
 
 management:

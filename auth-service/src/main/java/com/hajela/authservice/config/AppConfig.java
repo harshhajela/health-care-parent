@@ -20,7 +20,8 @@ public class AppConfig {
 
     @Bean
     public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
+        // Using lower cost factor for faster hashing in development
+        return new BCryptPasswordEncoder(4);
     }
 
     @Bean

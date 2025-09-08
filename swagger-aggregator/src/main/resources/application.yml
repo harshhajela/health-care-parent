@@ -1,0 +1,38 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: SWAGGER-AGGREGATOR
+  profiles:
+    active: development
+
+eureka:
+  instance:
+    hostname: ${DOCKER_HOST:localhost}
+  client:
+    service-url:
+      defaultZone: http://${DOCKER_HOST:localhost}:8761/eureka
+
+services:
+  auth-service:
+    url: http://localhost:8081
+  profile-service:
+    url: http://localhost:8082
+  booking-service:
+    url: http://localhost:8083
+  products:
+    url: http://localhost:8084
+  notification-service:
+    url: http://localhost:8085
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health, info, metrics"
+
+logging:
+  level:
+    com.hajela.swaggeraggregator: INFO
+    root: INFO

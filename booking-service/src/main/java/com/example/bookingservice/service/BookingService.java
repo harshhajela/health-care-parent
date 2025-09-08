@@ -28,6 +28,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final UserServiceClient userClient;
     private final JwtUtils jwtUtils;
+    private final BookingNotificationService notificationService;
 
     public List<BookingDto> getBookingHistory(String authorization) {
         String role = jwtUtils.getRoleFromHeader(authorization);
@@ -61,8 +62,12 @@ public class BookingService {
                 .createdAt(LocalDateTime.now())
                 .bookingStatus(BookingStatus.BOOKING_CREATED)
                 .build();
-        bookingRepository.save(bookingEntity);
-        return Optional.of(bookingEntity);
+        BookingEntity savedEntity = bookingRepository.save(bookingEntity);
+        
+        // Send real-time notification
+        notificationService.notifyBookingCreated(BookingEntity.from(savedEntity));
+        
+        return Optional.of(savedEntity);
     }
 
     public Optional<BookingEntity> getBooking(String bookingId) {
@@ -75,9 +80,16 @@ public class BookingService {
             throw new BookingException("data.not.found", "Booking not found");
         }
         BookingEntity bookingEntity = entityOptional.get();
+        String previousStatus = bookingEntity.getBookingStatus().name();
+        
         bookingEntity.setBookingStatus(action);
         bookingEntity.setUpdatedAt(LocalDateTime.now());
-        bookingRepository.save(bookingEntity);
-        return BookingEntity.from(bookingEntity);
+        BookingEntity savedEntity = bookingRepository.save(bookingEntity);
+        
+        // Send real-time notification
+        BookingDto updatedBooking = BookingEntity.from(savedEntity);
+        notificationService.notifyBookingStatusUpdate(updatedBooking, previousStatus);
+        
+        return updatedBooking;
     }
 }

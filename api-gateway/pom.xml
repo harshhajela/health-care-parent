@@ -15,6 +15,7 @@
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <json.webtoken.version>0.11.5</json.webtoken.version>
+        <springdoc-version>2.1.0</springdoc-version>
     </properties>
 
     <dependencies>
@@ -60,6 +61,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
